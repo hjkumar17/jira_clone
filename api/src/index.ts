@@ -13,10 +13,12 @@ import { RouteNotFoundError } from 'errors';
 import { attachPublicRoutes, attachPrivateRoutes } from './routes';
 
 const establishDatabaseConnection = async (): Promise<void> => {
+  console.log('connection start');
   try {
     await createDatabaseConnection();
+    console.log('connection');
   } catch (error) {
-    console.log(error);
+    console.log('connection error', error);
   }
 };
 
