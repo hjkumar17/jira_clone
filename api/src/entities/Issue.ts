@@ -1,6 +1,5 @@
 import striptags from 'striptags';
 import {
-  BaseEntity,
   Entity,
   Column,
   PrimaryGeneratedColumn,
@@ -19,8 +18,8 @@ import is from 'utils/validation';
 import { IssueType, IssueStatus, IssuePriority } from 'constants/issues';
 import { Comment, Project, User } from '.';
 
-@Entity()
-class Issue extends BaseEntity {
+@Entity('Issue')
+class Issue {
   static validations = {
     title: [is.required(), is.maxLength(200)],
     type: [is.required(), is.oneOf(Object.values(IssueType))],

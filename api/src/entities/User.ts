@@ -1,8 +1,7 @@
 import {
-  BaseEntity,
   Entity,
-  Column,
   PrimaryGeneratedColumn,
+  Column,
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
@@ -10,12 +9,13 @@ import {
   ManyToOne,
   RelationId,
 } from 'typeorm';
-
 import is from 'utils/validation';
-import { Comment, Issue, Project } from '.';
+import Comment from './Comment';
+import Issue from './Issue';
+import Project from './Project';
 
-@Entity()
-class User extends BaseEntity {
+@Entity('User')
+class User {
   static validations = {
     name: [is.required(), is.maxLength(100)],
     email: [is.required(), is.email(), is.maxLength(200)],
@@ -24,10 +24,10 @@ class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column('varchar')
+  @Column()
   name: string;
 
-  @Column('varchar')
+  @Column()
   email: string;
 
   @Column('varchar', { length: 2000 })

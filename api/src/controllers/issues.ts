@@ -1,7 +1,9 @@
+import { AppDataSource } from 'database/createConnection';
 import { Issue } from 'entities';
 import { catchErrors } from 'errors';
-import { updateEntity, deleteEntity, createEntity, findEntityOrThrow } from 'utils/typeorm';
+import { createEntity, deleteEntity, findEntityOrThrow, updateEntity } from 'utils/typeorm';
 
+const issueRepo = AppDataSource.getRepository(Issue);
 export const getProjectIssues = catchErrors(async (req, res) => {
   const { projectId } = req.currentUser;
   const { searchTerm } = req.query;
@@ -12,7 +14,8 @@ export const getProjectIssues = catchErrors(async (req, res) => {
     whereSQL += ' AND (issue.title ILIKE :searchTerm OR issue.descriptionText ILIKE :searchTerm)';
   }
 
-  const issues = await Issue.createQueryBuilder('issue')
+  const issues = await issueRepo
+    .createQueryBuilder('issue')
     .select()
     .where(whereSQL, { projectId, searchTerm: `%${searchTerm}%` })
     .getMany();
@@ -20,31 +23,29 @@ export const getProjectIssues = catchErrors(async (req, res) => {
   res.respond({ issues });
 });
 
-export const getIssueWithUsersAndComments = catchErrors(async (req, res) => {
-  const issue = await findEntityOrThrow(Issue, req.params.issueId, {
-    relations: ['users', 'comments', 'comments.user'],
-  });
-  res.respond({ issue });
-});
-
 export const create = catchErrors(async (req, res) => {
   const listPosition = await calculateListPosition(req.body);
-  const issue = await createEntity(Issue, { ...req.body, listPosition });
+  const issue = await createEntity(issueRepo, { ...req.body, listPosition });
   res.respond({ issue });
 });
 
 export const update = catchErrors(async (req, res) => {
-  const issue = await updateEntity(Issue, req.params.issueId, req.body);
+  const issue = await updateEntity(issueRepo, req.params.issueId, req.body);
   res.respond({ issue });
 });
 
 export const remove = catchErrors(async (req, res) => {
-  const issue = await deleteEntity(Issue, req.params.issueId);
+  const issue = await deleteEntity(issueRepo, req.params.issueId);
   res.respond({ issue });
 });
 
 const calculateListPosition = async ({ projectId, status }: Issue): Promise<number> => {
-  const issues = await Issue.find({ projectId, status });
+  const issues = await issueRepo.find({
+    where: {
+      projectId,
+      status,
+    },
+  });
 
   const listPositions = issues.map(({ listPosition }) => listPosition);
 
@@ -53,3 +54,13 @@ const calculateListPosition = async ({ projectId, status }: Issue): Promise<numb
   }
   return 1;
 };
+export const getIssueWithUsersAndComments = catchErrors(async (req, res) => {
+  const issue = await findEntityOrThrow(
+    issueRepo,
+    req.params.issueId,
+    //     , {
+    //     // relations: ['users', 'comments', 'comments.user'],
+    //   }
+  );
+  res.respond({ issue });
+});

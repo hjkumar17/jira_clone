@@ -2,20 +2,25 @@ import { Comment, Issue, Project, User } from 'entities';
 import { ProjectCategory } from 'constants/projects';
 import { IssueType, IssueStatus, IssuePriority } from 'constants/issues';
 import { createEntity } from 'utils/typeorm';
+import { AppDataSource } from './createConnection';
 
+const userRepo = AppDataSource.getRepository(User);
+const projectRepo = AppDataSource.getRepository(Project);
+const commentRepo = AppDataSource.getRepository(Comment);
+const issueRepo = AppDataSource.getRepository(Issue);
 const seedUsers = (): Promise<User[]> => {
   const users = [
-    createEntity(User, {
+    createEntity(userRepo, {
       email: 'rick@jira.guest',
       name: 'Pickle Rick',
       avatarUrl: 'https://i.ibb.co/7JM1P2r/picke-rick.jpg',
     }),
-    createEntity(User, {
+    createEntity(userRepo, {
       email: 'yoda@jira.guest',
       name: 'Baby Yoda',
       avatarUrl: 'https://i.ibb.co/6n0hLML/baby-yoda.jpg',
     }),
-    createEntity(User, {
+    createEntity(userRepo, {
       email: 'gaben@jira.guest',
       name: 'Lord Gaben',
       avatarUrl: 'https://i.ibb.co/6RJ5hq6/gaben.jpg',
@@ -25,7 +30,7 @@ const seedUsers = (): Promise<User[]> => {
 };
 
 const seedProject = (users: User[]): Promise<Project> =>
-  createEntity(Project, {
+  createEntity(projectRepo, {
     name: 'singularity 1.0',
     url: 'https://www.atlassian.com/software/jira',
     description:
@@ -38,7 +43,7 @@ const seedIssues = (project: Project): Promise<Issue[]> => {
   const { users } = project;
 
   const issues = [
-    createEntity(Issue, {
+    createEntity(issueRepo, {
       title: 'This is an issue of type: Task.',
       type: IssueType.TASK,
       status: IssueStatus.BACKLOG,
@@ -51,7 +56,7 @@ const seedIssues = (project: Project): Promise<Issue[]> => {
       project,
       users: [users[0]],
     }),
-    createEntity(Issue, {
+    createEntity(issueRepo, {
       title: "Click on an issue to see what's behind it.",
       type: IssueType.TASK,
       status: IssueStatus.BACKLOG,
@@ -64,7 +69,7 @@ const seedIssues = (project: Project): Promise<Issue[]> => {
       project,
       users: [users[0]],
     }),
-    createEntity(Issue, {
+    createEntity(issueRepo, {
       title: 'Try dragging issues to different columns to transition their status.',
       type: IssueType.STORY,
       status: IssueStatus.BACKLOG,
@@ -76,7 +81,7 @@ const seedIssues = (project: Project): Promise<Issue[]> => {
       reporterId: users[1].id,
       project,
     }),
-    createEntity(Issue, {
+    createEntity(issueRepo, {
       title: 'You can use rich text with images in issue descriptions.',
       type: IssueType.STORY,
       status: IssueStatus.BACKLOG,
@@ -89,7 +94,7 @@ const seedIssues = (project: Project): Promise<Issue[]> => {
       project,
       users: [users[2]],
     }),
-    createEntity(Issue, {
+    createEntity(issueRepo, {
       title: 'Each issue can be assigned priority from lowest to highest.',
       type: IssueType.TASK,
       status: IssueStatus.SELECTED,
@@ -101,7 +106,7 @@ const seedIssues = (project: Project): Promise<Issue[]> => {
       reporterId: users[2].id,
       project,
     }),
-    createEntity(Issue, {
+    createEntity(issueRepo, {
       title: 'Each issue has a single reporter but can have multiple assignees.',
       type: IssueType.STORY,
       status: IssueStatus.SELECTED,
@@ -114,7 +119,7 @@ const seedIssues = (project: Project): Promise<Issue[]> => {
       project,
       users: [users[1], users[2]],
     }),
-    createEntity(Issue, {
+    createEntity(issueRepo, {
       title:
         'You can track how many hours were spent working on an issue, and how many hours remain.',
       type: IssueType.TASK,
@@ -127,7 +132,7 @@ const seedIssues = (project: Project): Promise<Issue[]> => {
       reporterId: users[0].id,
       project,
     }),
-    createEntity(Issue, {
+    createEntity(issueRepo, {
       title: 'Try leaving a comment on this issue.',
       type: IssueType.TASK,
       status: IssueStatus.DONE,
@@ -146,42 +151,42 @@ const seedIssues = (project: Project): Promise<Issue[]> => {
 
 const seedComments = (issues: Issue[], users: User[]): Promise<Comment[]> => {
   const comments = [
-    createEntity(Comment, {
+    createEntity(commentRepo, {
       body: 'An old silent pond...\nA frog jumps into the pond,\nsplash! Silence again.',
       issueId: issues[0].id,
       userId: users[2].id,
     }),
-    createEntity(Comment, {
+    createEntity(commentRepo, {
       body: 'Autumn moonlight-\na worm digs silently\ninto the chestnut.',
       issueId: issues[1].id,
       userId: users[2].id,
     }),
-    createEntity(Comment, {
+    createEntity(commentRepo, {
       body: 'In the twilight rain\nthese brilliant-hued hibiscus -\nA lovely sunset.',
       issueId: issues[2].id,
       userId: users[2].id,
     }),
-    createEntity(Comment, {
+    createEntity(commentRepo, {
       body: 'A summer river being crossed\nhow pleasing\nwith sandals in my hands!',
       issueId: issues[3].id,
       userId: users[2].id,
     }),
-    createEntity(Comment, {
+    createEntity(commentRepo, {
       body: "Light of the moon\nMoves west, flowers' shadows\nCreep eastward.",
       issueId: issues[4].id,
       userId: users[2].id,
     }),
-    createEntity(Comment, {
+    createEntity(commentRepo, {
       body: 'In the moonlight,\nThe color and scent of the wisteria\nSeems far away.',
       issueId: issues[5].id,
       userId: users[2].id,
     }),
-    createEntity(Comment, {
+    createEntity(commentRepo, {
       body: 'O snail\nClimb Mount Fuji,\nBut slowly, slowly!',
       issueId: issues[6].id,
       userId: users[2].id,
     }),
-    createEntity(Comment, {
+    createEntity(commentRepo, {
       body: 'Everything I touch\nwith tenderness, alas,\npricks like a bramble.',
       issueId: issues[7].id,
       userId: users[2].id,
@@ -195,7 +200,7 @@ const createGuestAccount = async (): Promise<User> => {
   const project = await seedProject(users);
   const issues = await seedIssues(project);
   await seedComments(issues, project.users);
-  return users[2];
+  return users[1];
 };
 
 export default createGuestAccount;

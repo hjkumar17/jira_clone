@@ -23,7 +23,7 @@
     "paths": {
       "*": ["./*"]
     },
-    "types": ["node"],
+    "types": ["node","express"],
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,

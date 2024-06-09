@@ -1,5 +1,4 @@
 import {
-  BaseEntity,
   Entity,
   Column,
   PrimaryGeneratedColumn,
@@ -12,8 +11,8 @@ import is from 'utils/validation';
 import { ProjectCategory } from 'constants/projects';
 import { Issue, User } from '.';
 
-@Entity()
-class Project extends BaseEntity {
+@Entity('Project')
+class Project {
   static validations = {
     name: [is.required(), is.maxLength(100)],
     url: is.url(),

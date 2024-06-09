@@ -1,17 +1,17 @@
-import { createConnection, Connection } from 'typeorm';
+import 'reflect-metadata';
+import { DataSource } from 'typeorm';
+import * as entities from '../entities';
 
-import * as entities from 'entities';
-
-const createDatabaseConnection = (): Promise<Connection> =>
-  createConnection({
-    type: 'postgres',
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE,
-    entities: Object.values(entities),
-    synchronize: true,
-  });
-
-export default createDatabaseConnection;
+export const AppDataSource = new DataSource({
+  type: 'postgres',
+  host: 'localhost',
+  port: 5432,
+  username: 'postgres',
+  password: 'Postgres@24',
+  database: 'jira_development',
+  synchronize: true,
+  logging: false,
+  entities: Object.values(entities),
+  migrations: [],
+  subscribers: [],
+});

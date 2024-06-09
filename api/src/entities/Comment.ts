@@ -1,5 +1,4 @@
 import {
-  BaseEntity,
   Entity,
   Column,
   PrimaryGeneratedColumn,
@@ -11,8 +10,8 @@ import {
 import is from 'utils/validation';
 import { Issue, User } from '.';
 
-@Entity()
-class Comment extends BaseEntity {
+@Entity('Comment')
+class Comment {
   static validations = {
     body: [is.required(), is.maxLength(50000)],
   };

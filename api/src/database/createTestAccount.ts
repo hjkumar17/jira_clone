@@ -2,15 +2,20 @@ import { Comment, Issue, Project, User } from 'entities';
 import { ProjectCategory } from 'constants/projects';
 import { IssueType, IssueStatus, IssuePriority } from 'constants/issues';
 import { createEntity } from 'utils/typeorm';
+import { AppDataSource } from './createConnection';
 
+const userRepo = AppDataSource.getRepository(User);
+const projectRepo = AppDataSource.getRepository(Project);
+const commentRepo = AppDataSource.getRepository(Comment);
+const issueRepo = AppDataSource.getRepository(Issue);
 const seedUsers = (): Promise<User[]> => {
   const users = [
-    createEntity(User, {
+    createEntity(userRepo, {
       email: 'gaben@jira.test',
       name: 'Gaben',
       avatarUrl: 'https://i.ibb.co/6RJ5hq6/gaben.jpg',
     }),
-    createEntity(User, {
+    createEntity(userRepo, {
       email: 'yoda@jira.test',
       name: 'Yoda',
       avatarUrl: 'https://i.ibb.co/6n0hLML/baby-yoda.jpg',
@@ -20,7 +25,7 @@ const seedUsers = (): Promise<User[]> => {
 };
 
 const seedProject = (users: User[]): Promise<Project> =>
-  createEntity(Project, {
+  createEntity(projectRepo, {
     name: 'Project name',
     url: 'https://www.testurl.com',
     description: 'Project description',
@@ -32,7 +37,7 @@ const seedIssues = (project: Project): Promise<Issue[]> => {
   const { users } = project;
 
   const issues = [
-    createEntity(Issue, {
+    createEntity(issueRepo, {
       title: 'Issue title 1',
       type: IssueType.TASK,
       status: IssueStatus.BACKLOG,
@@ -41,7 +46,7 @@ const seedIssues = (project: Project): Promise<Issue[]> => {
       reporterId: users[0].id,
       project,
     }),
-    createEntity(Issue, {
+    createEntity(issueRepo, {
       title: 'Issue title 2',
       type: IssueType.TASK,
       status: IssueStatus.BACKLOG,
@@ -53,7 +58,7 @@ const seedIssues = (project: Project): Promise<Issue[]> => {
       users: [users[0]],
       project,
     }),
-    createEntity(Issue, {
+    createEntity(issueRepo, {
       title: 'Issue title 3',
       type: IssueType.STORY,
       status: IssueStatus.SELECTED,
@@ -70,7 +75,7 @@ const seedIssues = (project: Project): Promise<Issue[]> => {
 };
 
 const seedComments = (issue: Issue, user: User): Promise<Comment> =>
-  createEntity(Comment, {
+  createEntity(commentRepo, {
     body: 'Comment body',
     issueId: issue.id,
     userId: user.id,
