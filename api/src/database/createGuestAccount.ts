@@ -200,7 +200,7 @@ const createGuestAccount = async (): Promise<User> => {
   const project = await seedProject(users);
   const issues = await seedIssues(project);
   await seedComments(issues, project.users);
-  return users[1];
+  return users[0];
 };
 
 export default createGuestAccount;

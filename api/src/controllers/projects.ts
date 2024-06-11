@@ -7,13 +7,10 @@ import { AppDataSource } from '../database/createConnection';
 const projectRepository = AppDataSource.getRepository(Project);
 
 export const getProjectWithUsersAndIssues = catchErrors(async (req, res) => {
-  const project = await findEntityOrThrow(
-    projectRepository,
-    req.currentUser.projectId,
-    //   , {
-    //   relations: ['users', 'issues'],
-    // }
-  );
+  const project = await findEntityOrThrow(projectRepository, req.currentUser.projectId, [
+    'users',
+    'issues',
+  ]);
   res.respond({
     project: {
       ...project,

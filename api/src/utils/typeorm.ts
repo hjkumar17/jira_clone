@@ -20,9 +20,9 @@ const entities: { [key: string]: any } = { Comment, Issue, Project, User };
 export const findEntityOrThrow = async <T extends EntityInstance>(
   Entity: EntityConstructor<T>,
   id: any,
-  // options?: FindOptionsRelations<T>,
+  options?: any,
 ): Promise<EntityInstance> => {
-  const instance = await Entity.findOne({ where: { id } });
+  const instance = await Entity.findOne({ where: { id }, relations: [...options] });
   if (!instance) {
     throw new EntityNotFoundError(Entity.constructor.name);
   }

@@ -55,12 +55,10 @@ const calculateListPosition = async ({ projectId, status }: Issue): Promise<numb
   return 1;
 };
 export const getIssueWithUsersAndComments = catchErrors(async (req, res) => {
-  const issue = await findEntityOrThrow(
-    issueRepo,
-    req.params.issueId,
-    //     , {
-    //     // relations: ['users', 'comments', 'comments.user'],
-    //   }
-  );
+  const issue = await findEntityOrThrow(issueRepo, req.params.issueId, [
+    'users',
+    'comments',
+    'comments.user',
+  ]);
   res.respond({ issue });
 });
